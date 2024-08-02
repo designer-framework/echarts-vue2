@@ -4,136 +4,188 @@
 
 <script>
 export default {
-  name: 'PieRichText',
+  name: "PieRichText",
   mounted() {
     this.drawChart();
   },
   //methods
   methods: {
     drawChart() {
-      //2. 基于准备好的dom，初始化echarts实例
-      //此处的意思就是，对 demo 元素 进行图表初始化的相关操作
-      var echartsBI = this.$echarts.init(document.getElementById('container'));
+      //初始化echarts实例
+      var echartsBI = this.$echarts.init(document.getElementById("container"));
 
       echartsBI.showLoading();
 
-      //4.使用刚指定的配置项和数据显示图表。
-      console.log(this.option)
-      echartsBI.setOption(this.option);
+      this.loadOption().then((data) => {
+        let components = data.componentsMetric.children;
 
-      echartsBI.hideLoading();
-    }
+        let ser = components.map((childComponent) => {
+          return this.getSeriesItem(childComponent);
+        });
+        //各组件
+        let newOption = {
+          legend: {
+            bottom: 10,
+            left: "center",
+            //legend
+            data: components.map((child) => {
+              return child.name;
+            }),
+          },
+          //data
+          series: [
+            {
+              type: "pie",
+              radius: "65%",
+              center: ["50%", "50%"],
+              selectedMode: "single",
+              data: ser,
+            },
+          ],
+        };
+
+        Object.assign(this.option, newOption);
+
+        //加载配置项和图表数据
+        echartsBI.setOption(this.option);
+        echartsBI.hideLoading();
+      });
+    },
+    async loadOption() {
+      const response = await fetch("http://127.0.0.1:9999/analysis/json", {
+        method: "GET",
+      });
+      try {
+        return await response.json();
+      } catch (error) {
+        console.error("An error occurred:", error.message);
+      }
+    },
+    getSeriesItem(childComponent) {
+      if (childComponent.children.length == 0) {
+        return {
+          name: childComponent.name,
+          value: childComponent.value,
+        };
+      }
+      let items = childComponent.children.map((componentItem) => {
+        return (
+          "{Line|" +
+          componentItem.name +
+          "              }{value|" +
+          componentItem.value +
+          "/ms}{rate|" +
+          "55.9" +
+          "}"
+        );
+      });
+
+      return {
+        name: childComponent.name,
+        value: childComponent.value,
+        label: {
+          formatter: [
+            "{title|{b}}{abg|}",
+            "  {nameHead|ItemName}{valueHead|Duration}{rateHead|Percent}",
+            "{hr|}",
+            ...items,
+          ].join("\n"),
+          backgroundColor: "#eee",
+          borderColor: "#777",
+          borderWidth: 1,
+          borderRadius: 4,
+          rich: {
+            title: {
+              color: "#eee",
+              align: "center",
+            },
+            abg: {
+              backgroundColor: "#333",
+              width: "100%",
+              align: "right",
+              height: 25,
+              borderRadius: [4, 4, 0, 0],
+            },
+            Line: {
+              height: 30,
+              align: "left",
+            },
+            nameHead: {
+              color: "#333",
+              height: 24,
+              align: "left",
+            },
+            hr: {
+              borderColor: "#777",
+              width: "100%",
+              borderWidth: 0.5,
+              height: 0,
+            },
+            value: {
+              width: 20,
+              padding: [0, 20, 0, 30],
+              align: "right",
+            },
+            valueHead: {
+              color: "#333",
+              width: 20,
+              padding: [0, 20, 0, 30],
+              align: "right",
+            },
+            rate: {
+              width: 40,
+              align: "right",
+              padding: [0, 10, 0, 0],
+            },
+            rateHead: {
+              color: "#333",
+              width: 40,
+              align: "right",
+              padding: [0, 10, 0, 0],
+            },
+          },
+        },
+      };
+    },
   },
   //data
   data() {
     return {
       option: {
         title: {
-          text: 'Application Start Up Statistics',
-          subtext: 'Fake Data',
-          left: 'center'
+          text: "Application Start Up Statistics",
+          subtext: "Fake Data",
+          left: "center",
         },
         tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)",
         },
         legend: {
           bottom: 10,
-          left: 'center',
-          data: ['Scanner', 'Swagger', 'Apollo']
+          left: "center",
+          data: [],
         },
         series: [
           {
-            type: 'pie',
-            radius: '65%',
-            center: ['50%', '50%'],
-            selectedMode: 'single',
-            data: [
-              {
-                value: 1548,
-                name: 'Scanner',
-                label: {
-                  formatter: [
-                    '{title|{b}}{abg|}',
-                    '{headName|ShowName}{headDuration|Duration}{headRate|Percent}',
-                    '{hr|}',
-                    '{Line|com.lcsc.} {value|202}{rate|  55.3%}',
-                    '{Line|com.lcsc.} {value|142}{rate|  38.9%}',
-                    '{Line|com.lcsc.xczxcxcxcz} {value|121}{rate| 5.8%}'
-                  ].join('\n'),
-                  backgroundColor: '#eee',
-                  borderColor: '#777',
-                  borderWidth: 1,
-                  borderRadius: 4,
-                  rich: {
-                    title: {
-                      color: '#eee',
-                      align: 'center'
-                    },
-                    abg: {
-                      backgroundColor: '#333',
-                      width: '100%',
-                      align: 'right',
-                      height: 25,
-                      borderRadius: [4, 4, 0, 0]
-                    },
-                    headName: {
-                      color: '#333',
-                      height: 24,
-                      align: 'left'
-                    },
-                    Line: {
-                      height: 30,
-                      align: 'left'
-                    },
-                    hr: {
-                      borderColor: '#777',
-                      width: '100%',
-                      borderWidth: 0.5,
-                      height: 0
-                    },
-                    value: {
-                      width: 20,
-                      padding: [0, 20, 0, 30],
-                      align: 'right'
-                    },
-                    headDuration: {
-                      color: '#333',
-                      width: 40,
-                      padding: [0, 20, 0, 30],
-                      align: 'right'
-                    },
-                    rate: {
-                      width: 40,
-                      align: 'right',
-                      padding: [0, 10, 0, 0]
-                    },
-                    headRate: {
-                      color: '#333',
-                      width: 40,
-                      align: 'right',
-                      padding: [0, 10, 0, 0]
-                    }
-                  }
-                }
-              },
-              { value: 735, name: 'Swagger' },
-              { value: 434, name: 'Apollo' }
-            ],
+            type: "pie",
+            radius: "65%",
+            center: ["50%", "50%"],
+            selectedMode: "single",
+            data: [],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      }
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+      },
     };
-  }
-
-}
+  },
+};
 </script>
 
 <style scoped>
