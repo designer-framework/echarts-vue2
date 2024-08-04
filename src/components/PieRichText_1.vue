@@ -72,7 +72,7 @@ export default {
       }
       let items = childComponent.children.map((componentItem) => {
         return (
-          "{Line|" + componentItem.name + "}{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "}"
+          "{Line|" + componentItem.name + "              }{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "}"
         );
       });
 
@@ -81,6 +81,8 @@ export default {
         value: childComponent.value,
         desc: childComponent.desc,
         label: {
+          show: true,
+          //rotate: 'radial',
           formatter: [
             "{title|{b}}{abg|}",
             "  {nameHead|ItemName}{valueHead|Duration}{rateHead|Percent}",
@@ -158,8 +160,6 @@ export default {
           trigger: "item",
           //formatter: "{a} <br/>{b} : {c} ({d}%)",
           formatter: function (item, ticket, callback) {
-            callback(ticket, 'toHTML(content)');
-            console.log(item.data)
             return item.marker + ' ' + item.name + ': ' + item.value + ' (' + item.percent + '%)<br>' + (item.data.desc ? item.data.desc : '');
           }
         },
@@ -174,6 +174,7 @@ export default {
             radius: "65%",
             center: ["50%", "50%"],
             selectedMode: "single",
+            avoidLabelOverlap: true,
             data: [],
             emphasis: {
               itemStyle: {
@@ -182,6 +183,12 @@ export default {
                 shadowColor: "rgba(0, 0, 0, 0.5)",
               },
             },
+            labelLine: {
+              smooth: true
+            },
+            select: {
+              disabled: false
+            }
           },
         ],
       },
