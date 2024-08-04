@@ -22,6 +22,7 @@ export default {
         let ser = components.map((childComponent) => {
           return this.getSeriesItem(childComponent);
         });
+
         //各组件
         let newOption = {
           legend: {
@@ -66,23 +67,19 @@ export default {
         return {
           name: childComponent.name,
           value: childComponent.value,
+          desc: childComponent.desc
         };
       }
       let items = childComponent.children.map((componentItem) => {
         return (
-          "{Line|" +
-          componentItem.name +
-          "              }{value|" +
-          componentItem.value +
-          "/ms}{rate|" +
-          "55.9" +
-          "}"
+          "{Line|" + componentItem.name + "}{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "}"
         );
       });
 
       return {
         name: childComponent.name,
         value: childComponent.value,
+        desc: childComponent.desc,
         label: {
           formatter: [
             "{title|{b}}{abg|}",
@@ -159,7 +156,12 @@ export default {
         },
         tooltip: {
           trigger: "item",
-          formatter: "{a} <br/>{b} : {c} ({d}%)",
+          //formatter: "{a} <br/>{b} : {c} ({d}%)",
+          formatter: function (item, ticket, callback) {
+            callback(ticket, 'toHTML(content)');
+            console.log(item.data)
+            return item.marker + ' ' + item.name + ': ' + item.value + ' (' + item.percent + '%)<br>' + (item.data.desc ? item.data.desc : '');
+          }
         },
         legend: {
           bottom: 10,

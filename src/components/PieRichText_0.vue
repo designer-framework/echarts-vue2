@@ -19,7 +19,7 @@ export default {
   methods: {
     async getEchartsDate() {
 
-      const response = await fetch("http://127.0.0.1:9999/analysis/json", { method: "GET" })
+      const response = await fetch("http://127.0.0.1:9999/analysis/json", {method: "GET"})
 
       try {
         return await response.json()
@@ -32,7 +32,7 @@ export default {
     },
     drawChart() {
       //初始化图表
-      var echartsBI = this.$echarts.init(document.getElementById('container'));
+      const echartsBI = this.$echarts.init(document.getElementById('container'));
 
       echartsBI.showLoading();
 
@@ -66,7 +66,7 @@ export default {
           {
             type: 'tree',
             name: 'Component组件耗时分析',
-            data: [{"children":[{"children":[{"children":[],"name":"com.lcsc.profiling.web.api.ApiController$$EnhancerBySpringCGLIB$$3ac2f6ca-->com.lcsc.profiling.web.api.ApiController$$EnhancerBySpringCGLIB$$3ac2f6ca","value":30.065},{"children":[],"name":"Others","value":0}],"name":"AopProxyCreator","value":30.065},{"children":[{"children":[],"name":"application","value":1827.773},{"children":[],"name":"Others","value":1144.433}],"name":"Apollo","value":2972.206},{"children":[],"name":"Apollo","value":8.853},{"children":[],"name":"Swagger","value":253.702},{"children":[],"name":"Others","value":11918.831}],"name":"SpringApplication","value":15183.657}],
+            data: [],
             top: '2%',
             left: '5%',
             bottom: '2%',
