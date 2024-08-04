@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "PieRichText",
+  name: "PieRichText_1",
   mounted() {
     this.drawChart();
   },

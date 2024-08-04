@@ -1,22 +1,16 @@
 <template>
   <div id="app">
-    <!-- <HelloWorld /> -->
-<!--     <PieRichText0 /> -->
-    <PieRichText1 />
+    <Spring/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-import PieRichText0 from './components/PieRichText_0.vue'
-import PieRichText1 from './components/PieRichText_1.vue'
+import Spring from './components/Spring.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
-    PieRichText0,
-    PieRichText1
+    Spring
   }
 }
 </script>
@@ -33,7 +27,7 @@ body {
   padding: 0;
 }
 
-html, body{
+html, body {
   width: 100%;
   height: 100%;
 }
