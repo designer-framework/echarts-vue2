@@ -6,26 +6,23 @@
       <el-container>
 
         <!-- Body -->
-          <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-            <el-tab-pane label="组件耗时分析" name="components-analysis">
-                <ComponentsAnalysis style="height: 100vh"/>
-            </el-tab-pane>
-            <el-tab-pane label="Bean耗时分析" name="bean-creation-analysis">
-              <BeanCreationAnalysis/>
-            </el-tab-pane>
-            <el-tab-pane label="Bean创建时序图" name="third">
-              Bean创建时序图
-            </el-tab-pane>
-            <el-tab-pane label="方法调用耗时分析" name="method-invoke-analysis">
-              <MethodInvokeAnalysis/>
-            </el-tab-pane>
-            <el-tab-pane label="未被加载的Jar包" name="class-loader-unload-jar-analysis">
-              <ClassLoaderUnloadJarAnalysis/>
-            </el-tab-pane>
-            <el-tab-pane label="性能火焰图" name="six">
-              性能火焰图
-            </el-tab-pane>
-          </el-tabs>
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="组件耗时分析" name="components-analysis">
+            <ComponentsAnalysis style="height: 100vh"/>
+          </el-tab-pane>
+          <el-tab-pane label="Bean耗时分析" name="bean-creation-analysis">
+            <BeanCreationAnalysis/>
+          </el-tab-pane>
+          <el-tab-pane label="方法调用耗时分析" name="method-invoke-analysis">
+            <MethodInvokeAnalysis/>
+          </el-tab-pane>
+          <el-tab-pane label="未被加载的Jar包" name="class-loader-unload-jar-analysis">
+            <ClassLoaderUnloadJarAnalysis/>
+          </el-tab-pane>
+          <el-tab-pane label="性能火焰图" name="flame-graph-analysis">
+            <FlameGraphAnalysis/>
+          </el-tab-pane>
+        </el-tabs>
 
       </el-container>
 
@@ -38,10 +35,17 @@ import ComponentsAnalysis from "./ComponentsAnalysis.vue";
 import BeanCreationAnalysis from "./BeanCreationAnalysis.vue";
 import MethodInvokeAnalysis from "./MethodInvokeAnalysis.vue";
 import ClassLoaderUnloadJarAnalysis from "./ClassLoaderUnloadJarAnalysis.vue";
+import FlameGraphAnalysis from "./FlameGraphAnalysis.vue";
 
 export default {
   name: 'SpringAnalysis',
-  components: { ComponentsAnalysis, BeanCreationAnalysis, MethodInvokeAnalysis, ClassLoaderUnloadJarAnalysis},
+  components: {
+    ComponentsAnalysis,
+    BeanCreationAnalysis,
+    MethodInvokeAnalysis,
+    ClassLoaderUnloadJarAnalysis,
+    FlameGraphAnalysis
+  },
   data() {
     return {
       activeName: 'class-loader-unload-jar-analysis'
@@ -74,17 +78,17 @@ body > .el-container {
   height: 100%;
 }
 
-.el-tabs  {
+.el-tabs {
   height: 100%;
   width: 100%;
 }
 
-.el-tab-pane  {
+.el-tab-pane {
   height: 100%;
   width: 100%;
 }
 
-.first  {
+.first {
   height: 100%;
   width: 100%;
 }

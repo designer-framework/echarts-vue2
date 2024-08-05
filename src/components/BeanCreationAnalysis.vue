@@ -3,15 +3,16 @@
 
     <el-input
       v-model="search"
-      size="mini"
-      placeholder="创建Bean耗时/ms 或 Bean名称"/>
+      placeholder="创建Bean耗时/ms 或 Bean名称"
+      size="mini"/>
 
     <el-table
       :data="getTableData()"
-      style="width: 100%"
       :row-key="(data)=>data.id"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+      style="width: 100%"
+      @row-click="handleRowClick">
       <el-table-column
         fixed="left"
         label="Bean名称"
@@ -70,6 +71,7 @@ export default {
         children: [],
         parentId: -1,
         actualDuration: -1,
+        isShow: false,
         tags: {}
       }],
       filterText: 100,
@@ -104,6 +106,10 @@ export default {
       return this.tableData.filter(data => (data.name.toLowerCase().includes(this.search.toLowerCase())) && data.parentId === 0);
     },
 
+    handleRowClick(row, column, event) {
+      return !row.isShow;
+    }
+
   }
 };
 </script>
@@ -111,4 +117,20 @@ export default {
 <style scoped>
 .bean-creation-analysis {
 }
+
+.demo-table-expand {
+  font-size: 0;
+}
+
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
 </style>
