@@ -1,16 +1,21 @@
 <template>
   <div class="bean-creation-analysis">
 
+    <el-input
+      v-model="search"
+      size="mini"
+      placeholder="创建Bean耗时/ms 或 Bean名称"/>
+
     <el-table
       :data="getTableData()"
       style="width: 100%"
-      :row-key="(data)=>data.parentId + '-' + data.id"
+      :row-key="(data)=>data.id"
       border
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column
         fixed="left"
         label="Bean名称"
-        width="800">
+        width="auto">
         <template slot-scope="scope">
           <el-tag size="medium">{{ scope.row.name }}</el-tag>
         </template>
@@ -18,26 +23,27 @@
       <el-table-column
         fixed="left"
         label="创建Bean耗时/ms"
-        width="200">
+        width="auto">
         <template slot-scope="scope">
           {{ scope.row.duration }}
         </template>
       </el-table-column>
       <el-table-column
         fixed="left"
-        label="创建Bean真实耗时/ms">
+        label="创建Bean真实耗时/ms"
+        width="auto">
         <template slot-scope="scope">
           {{ scope.row.actualDuration }}
         </template>
       </el-table-column>
       <el-table-column
-        sortable
-        align="right">
-        <template slot="header" slot-scope="scope">
-          <el-input
-            v-model="search"
-            size="mini"
-            placeholder="创建Bean耗时/ms 或 Bean名称"/>
+        align="left"
+        width="auto">
+        <template slot-scope="scope">
+          <span v-for="(value, key) in scope.row.tags">
+              {{ key }}: {{ value }}
+            <br/>
+          </span>
         </template>
       </el-table-column>
     </el-table>
