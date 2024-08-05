@@ -1,30 +1,29 @@
 <template>
   <div id="app">
-    <Spring/>
+    <SpringAnalysis/>
   </div>
 </template>
 
 <script>
-import Spring from './components/Spring.vue'
+import SpringAnalysis from './components/SpringAnalysis.vue'
 
 export default {
   name: 'App',
   components: {
-    Spring
+    SpringAnalysis
   }
 }
 </script>
 
 <style>
-html,
-body {
-  height: 100%;
-  margin: 0px;
-}
-
 * {
   margin: 0;
   padding: 0;
+}
+
+html,body,#app {
+  height: 100%;
+  margin: 0px;
 }
 
 html, body {
@@ -33,6 +32,5 @@ html, body {
 }
 
 #app {
-  height: 100%;
 }
 </style>

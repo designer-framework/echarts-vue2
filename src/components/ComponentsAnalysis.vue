@@ -1,10 +1,11 @@
 <template>
-  <div id="container"></div>
+  <div id="components-analysis">
+  </div>
 </template>
 
 <script>
 export default {
-  name: "PieRichText_1",
+  name: "ComponentsAnalysis",
   mounted() {
     this.drawChart();
   },
@@ -12,7 +13,7 @@ export default {
   methods: {
     drawChart() {
       //初始化echarts实例
-      var echartsBI = this.$echarts.init(document.getElementById("container"));
+      const echartsBI = this.$echarts.init(document.getElementById("components-analysis"));
 
       echartsBI.showLoading();
 
@@ -26,8 +27,10 @@ export default {
         //各组件
         let newOption = {
           legend: {
-            bottom: 10,
-            left: "center",
+            type: 'scroll',//滚动
+            orient: 'vertical',//Title摆放位置
+            left: 5,
+            bottom: 20,
             //legend
             data: components.map((child) => {
               return child.name;
@@ -50,6 +53,10 @@ export default {
         //加载配置项和图表数据
         echartsBI.setOption(this.option);
         echartsBI.hideLoading();
+
+        window.onload = function () {
+          echartsBI.resize();
+        }
       });
     },
     async loadOption() {
@@ -72,7 +79,7 @@ export default {
       }
       let items = childComponent.children.map((componentItem) => {
         return (
-          "{Line|" + componentItem.name + "              }{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "}"
+          "{Line|" + componentItem.name + "              }{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "%}"
         );
       });
 
@@ -152,8 +159,8 @@ export default {
     return {
       option: {
         title: {
-          text: "Application Start Up Statistics",
-          subtext: "Fake Data",
+          text: "Spring Application Components Statistics",
+          //subtext: "Fake Data",
           left: "center",
         },
         tooltip: {
@@ -198,7 +205,8 @@ export default {
 </script>
 
 <style scoped>
-#container {
+#components-analysis {
   height: 100%;
+  width: 100%
 }
 </style>
