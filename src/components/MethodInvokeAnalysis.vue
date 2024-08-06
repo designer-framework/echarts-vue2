@@ -7,10 +7,16 @@
       :row-key="(data) => data.method"
       border
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+
       <el-table-column
         fixed="left"
+        type="index">
+      </el-table-column>
+      <el-table-column
         label="方法名"
+        fixed="left"
         width="1000">
+
         <template slot-scope="scope">
           {{ scope.row.method }}
           <el-table
@@ -19,7 +25,13 @@
             border>
             <el-table-column
               fixed="left"
+              type="index">
+            </el-table-column>
+
+            <el-table-column
+              fixed="left"
               label="入参/类名"
+              :show-overflow-tooltip="true"
               width="auto">
               <template slot-scope="scope">
                 {{ scope.row.args }}
@@ -35,7 +47,9 @@
             </el-table-column>
           </el-table>
         </template>
+
       </el-table-column>
+
       <el-table-column
         fixed="left"
         label="调用次数"
@@ -44,6 +58,7 @@
           {{ scope.row.invokeCount }}
         </template>
       </el-table-column>
+
       <el-table-column
         fixed="left"
         label="总耗时">
@@ -51,6 +66,7 @@
           {{ scope.row.totalCost }}
         </template>
       </el-table-column>
+
       <el-table-column
         fixed="left"
         label="平均耗时">
@@ -74,13 +90,7 @@ export default {
   },
   data() {
     return {
-      tableData: [{
-        method: '',
-        invokeCount: -1,
-        totalCost: -1,
-        averageCost: -1,
-        invokeDetails: [],
-      }],
+      tableData: [],
       filterText: 100,
       search: ''
     }

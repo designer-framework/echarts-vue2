@@ -6,21 +6,24 @@
       <el-container>
 
         <!-- Body -->
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="组件耗时分析" name="components-analysis">
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick" >
+          <el-tab-pane label="组件耗时分析" name="components-analysis" :lazy="true">
             <ComponentsAnalysis style="height: 100vh"/>
           </el-tab-pane>
-          <el-tab-pane label="Bean耗时分析" name="bean-creation-analysis">
+          <el-tab-pane label="Bean耗时分析" name="bean-creation-analysis" :lazy="true">
             <BeanCreationAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="方法调用耗时分析" name="method-invoke-analysis">
+          <el-tab-pane label="方法调用耗时分析" name="method-invoke-analysis" :lazy="true">
             <MethodInvokeAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="未被加载的Jar包" name="class-loader-unload-jar-analysis">
+          <el-tab-pane label="未被加载的Jar包" name="class-loader-unload-jar-analysis" :lazy="true">
             <ClassLoaderUnloadJarAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="性能火焰图" name="flame-graph-analysis">
+          <el-tab-pane label="性能火焰图" name="flame-graph-analysis" :lazy="true">
             <FlameGraphAnalysis/>
+          </el-tab-pane>
+          <el-tab-pane label="ElementUI测试页面" name="test-analysis" :lazy="true">
+            <TestAnalysis/>
           </el-tab-pane>
         </el-tabs>
 
@@ -36,6 +39,7 @@ import BeanCreationAnalysis from "./BeanCreationAnalysis.vue";
 import MethodInvokeAnalysis from "./MethodInvokeAnalysis.vue";
 import ClassLoaderUnloadJarAnalysis from "./ClassLoaderUnloadJarAnalysis.vue";
 import FlameGraphAnalysis from "./FlameGraphAnalysis.vue";
+import TestAnalysis from "./TestAnalysis.vue";
 
 export default {
   name: 'SpringAnalysis',
@@ -44,7 +48,8 @@ export default {
     BeanCreationAnalysis,
     MethodInvokeAnalysis,
     ClassLoaderUnloadJarAnalysis,
-    FlameGraphAnalysis
+    FlameGraphAnalysis,
+    TestAnalysis
   },
   data() {
     return {

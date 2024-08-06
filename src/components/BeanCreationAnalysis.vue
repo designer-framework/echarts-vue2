@@ -9,42 +9,72 @@
     <el-table
       :data="getTableData()"
       :row-key="(data)=>data.id"
+      :row-class-name="tableRowClassName"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :indent="46"
       border
-      style="width: 100%"
-      @row-click="handleRowClick">
+      size="mini"
+      style="width: 100%">
+
       <el-table-column
         fixed="left"
         label="Bean名称"
-        width="auto">
+        width="auto"
+        min-width="100%"
+      >
         <template slot-scope="scope">
           <el-tag size="medium">{{ scope.row.name }}</el-tag>
         </template>
       </el-table-column>
+
       <el-table-column
-        fixed="left"
+        prop="duration"
         label="创建Bean耗时/ms"
         width="auto">
-        <template slot-scope="scope">
-          {{ scope.row.duration }}
-        </template>
       </el-table-column>
+
       <el-table-column
-        fixed="left"
         label="创建Bean真实耗时/ms"
+        prop="actualDuration"
+        width="auto">
+      </el-table-column>
+
+      <el-table-column
+        label="耗时明细/ms"
         width="auto">
         <template slot-scope="scope">
-          {{ scope.row.actualDuration }}
+          <div v-if="scope.row.beanLifeCycles">
+            <p v-if="scope.row.beanLifeCycles.createAopProxyClass">
+              @. 创建AOP代理类耗时: {{ scope.row.beanLifeCycles.createAopProxyClass.duration }}
+            </p>
+            <p v-if="scope.row.beanLifeCycles.afterPropertiesSet">
+              @. AfterPropertiesSet耗时: {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}
+            </p>
+            <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
+              @. AfterSingletonsInstantiated耗时: {{ scope.row.beanLifeCycles.afterSingletonsInstantiated.duration }}
+            </p>
+            <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
+              @. 其它耗时...
+            </p>
+          </div>
         </template>
       </el-table-column>
+
       <el-table-column
-        align="left"
+        label="Tags"
         width="auto">
         <template slot-scope="scope">
-          <span v-for="(value, key) in scope.row.tags">
-              {{ key }}: {{ value }}
-            <br/>
-          </span>
+          <div>
+            <p v-if="scope.row.tags.className">
+              类&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp名: {{ scope.row.tags.className }}
+            </p>
+            <p v-if="scope.row.tags.threadName">
+              创建线程: {{ scope.row.tags.threadName }}
+            </p>
+            <p v-if="scope.row.tags.classLoader">
+              类加载器: {{ scope.row.tags.classLoader }}
+            </p>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -72,7 +102,13 @@ export default {
         parentId: -1,
         actualDuration: -1,
         isShow: false,
-        tags: {}
+        tags: {},
+        beanLifeCycles: {
+          prop: {
+            stepName: '',
+            duration: -1
+          }
+        }
       }],
       filterText: 100,
       search: ''
@@ -106,11 +142,17 @@ export default {
       return this.tableData.filter(data => (data.name.toLowerCase().includes(this.search.toLowerCase())) && data.parentId === 0);
     },
 
-    handleRowClick(row, column, event) {
-      return !row.isShow;
+    tableRowClassName({row, rowIndex}) {
+      if (row.actualDuration > 100) {
+        console.log(row.name)
+        return 'warning-row';
+      } else if (rowIndex === 3) {
+        return 'success-row';
+      }
+      return '';
     }
+  },
 
-  }
 };
 </script>
 
@@ -131,6 +173,14 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+}
+
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
 }
 
 </style>
