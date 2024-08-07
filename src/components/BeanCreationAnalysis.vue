@@ -7,40 +7,58 @@
       size="mini"/>
 
     <el-table
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
       :data="getTableData()"
       :row-key="(data)=>data.id"
       :row-class-name="tableRowClassName"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      :indent="46"
+      :indent="16"
       border
       size="mini"
       style="width: 100%">
 
       <el-table-column
         fixed="left"
-        label="Bean名称"
-        width="auto"
+        label="Bean name"
         min-width="100%"
       >
         <template slot-scope="scope">
-          <el-tag size="medium">{{ scope.row.name }}</el-tag>
+          <el-popover
+            placement="top-start"
+            title="Bean Info"
+            width="100%"
+            trigger="hover">
+            <div  v-if="scope.row">
+              <div v-for="(value, key) in scope.row.tags" class="text item">
+                <span style="font-style: italic">{{ key }}</span>: <span>{{ value }}</span>
+                <br/>
+                <br/>
+              </div>
+            </div>
+            <span slot="reference">
+              <span class="bean-name"></span>
+              <el-tag size="medium">{{ scope.row.name }}</el-tag>
+            </span>
+          </el-popover>
         </template>
       </el-table-column>
 
       <el-table-column
         prop="duration"
-        label="创建Bean耗时/ms"
-        width="auto">
+        label="Duration/(ms)"
+        width="80px">
       </el-table-column>
 
       <el-table-column
-        label="创建Bean真实耗时/ms"
         prop="actualDuration"
-        width="auto">
+        label="ActualDuration/(ms)"
+        width="80px">
       </el-table-column>
 
       <el-table-column
-        label="耗时明细/ms"
+        label="DurationDetail/(ms)"
         width="auto">
         <template slot-scope="scope">
           <div v-if="scope.row.beanLifeCycles">
@@ -51,31 +69,18 @@
               @. AfterPropertiesSet耗时: {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}
             </p>
             <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
-              @. AfterSingletonsInstantiated耗时: {{ scope.row.beanLifeCycles.afterSingletonsInstantiated.duration }}
+              @. AfterSingletonsInstantiated耗时: {{
+                scope.row.beanLifeCycles.afterSingletonsInstantiated.duration
+              }}
             </p>
             <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
               @. 其它耗时...
             </p>
           </div>
-        </template>
-      </el-table-column>
 
-      <el-table-column
-        label="Tags"
-        width="auto">
-        <template slot-scope="scope">
-          <div>
-            <p v-if="scope.row.tags.className">
-              类&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp名: {{ scope.row.tags.className }}
-            </p>
-            <p v-if="scope.row.tags.threadName">
-              创建线程: {{ scope.row.tags.threadName }}
-            </p>
-            <p v-if="scope.row.tags.classLoader">
-              类加载器: {{ scope.row.tags.classLoader }}
-            </p>
-          </div>
         </template>
+
+
       </el-table-column>
     </el-table>
   </div>
@@ -91,10 +96,12 @@ export default {
         this.tableData = createdBeans.sort(function (a, b) {
           return b.duration - a.duration
         });
+        this.loading = false;
       })
   },
   data() {
     return {
+      loading: true,
       tableData: [{
         id: -1,
         name: '',
@@ -117,6 +124,10 @@ export default {
 
   methods: {
 
+    /**
+     *
+     * @returns {Promise<any>}
+     */
     async loadData() {
       const response = await fetch("http://127.0.0.1:9999/analysis/json", {
         method: "GET",
@@ -128,6 +139,10 @@ export default {
       }
     },
 
+    /**
+     *
+     * @returns {{children: *[], name: string, actualDuration: number, id: number, parentId: number, isShow: boolean, tags: {}, beanLifeCycles: {prop: {duration: number, stepName: string}}}[]}
+     */
     getTableData() {
       if (!this.search) {
         return this.tableData.filter(data => {
@@ -142,21 +157,92 @@ export default {
       return this.tableData.filter(data => (data.name.toLowerCase().includes(this.search.toLowerCase())) && data.parentId === 0);
     },
 
+    /**
+     *
+     * @param row
+     * @param rowIndex
+     * @returns {string}
+     */
     tableRowClassName({row, rowIndex}) {
       if (row.actualDuration > 100) {
-        console.log(row.name)
         return 'warning-row';
       } else if (rowIndex === 3) {
         return 'success-row';
       }
       return '';
+    },
+
+    /**
+     * 自适应表格列宽
+     * @param str
+     * @param tableData
+     * @param flag
+     * @returns {string}
+     */
+    flexColumnWidth(str, tableData, flag = 'max') {
+      // str为该列的字段名(传字符串);tableData为该表格的数据源(传变量);
+      // flag为可选值，可不传该参数,传参时可选'max'或'equal',默认为'max'
+      // flag为'max'则设置列宽适配该列中最长的内容,flag为'equal'则设置列宽适配该列中第一行内容的长度。
+      str = str + ''
+      let columnContent = ''
+      if (!tableData || !tableData.length || tableData.length === 0) {
+        return
+      }
+      if (!str || !str.length || str.length === 0) {
+        return
+      }
+      if (flag === 'equal') {
+        // 获取该列中第一个不为空的数据(内容)
+        for (let i = 0; i < tableData.length; i++) {
+          if (tableData[i][str].length > 0) {
+            // console.log('该列数据[0]:', tableData[0][str])
+            columnContent = tableData[i][str]
+            break
+          }
+        }
+      } else {
+        // 获取该列中最长的数据(内容)
+        let index = 0
+        for (let i = 0; i < tableData.length; i++) {
+          if (tableData[i][str] === null) {
+            return
+          }
+          const now_temp = tableData[i][str] + ''
+          const max_temp = tableData[index][str] + ''
+          if (now_temp.length > max_temp.length) {
+            index = i
+          }
+        }
+        columnContent = tableData[index][str]
+      }
+      // console.log('该列数据[i]:', columnContent)
+      // 以下分配的单位长度可根据实际需求进行调整
+      let flexWidth = 0
+      for (const char of columnContent) {
+        //英文字符
+        if ((char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z')) {
+          flexWidth += 8
+          //中文字符
+        } else if (char >= '\u4e00' && char <= '\u9fa5') {
+          flexWidth += 10
+        } else {
+          flexWidth += 6
+        }
+      }
+      if (flexWidth < 80) {
+        flexWidth = 80
+      }
+      return flexWidth + 'px'
     }
+
+
   },
+
 
 };
 </script>
 
-<style scoped>
+<style >
 .bean-creation-analysis {
 }
 
@@ -175,12 +261,25 @@ export default {
   width: 50%;
 }
 
+.el-table .cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .el-table .warning-row {
   background: oldlace;
 }
 
 .el-table .success-row {
   background: #f0f9eb;
+}
+
+.bean-name {
+  background: #f0f9eb;
+  border: 1px dashed #000;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 </style>
