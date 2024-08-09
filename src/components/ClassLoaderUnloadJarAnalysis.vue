@@ -6,6 +6,7 @@
       style="width: 100%;margin-bottom: 20px;"
       row-key="id"
       border
+      v-once
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column
         prop="name"
