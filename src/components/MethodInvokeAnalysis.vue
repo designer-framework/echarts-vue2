@@ -3,79 +3,70 @@
 
     <el-table
       v-loading="loading"
-      element-loading-text="拼命加载中"
-      element-loading-spinner="el-icon-loading"
       :data="tableData"
-      style="width: 100%"
+      :default-sort="defaultSort"
       :row-key="(data) => data.method"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+      element-loading-spinner="el-icon-loading"
+      element-loading-text="拼命加载中"
+      size="medium"
+      sort="invokeCount"
+      style="width: 100%">
 
       <el-table-column
-        fixed="left"
-        type="index">
+        type="expand"
+        width="100%">
+        <template slot-scope="scope">
+          <el-collapse-transition>
+            <div>
+              <el-table
+                :data="scope.row.invokeDetails"
+                :default-sort="childTableSort"
+                border
+                size="medium"
+                style="width: 100%;">
+                <el-table-column width="100%">
+                </el-table-column>
+                <el-table-column type="index">
+                </el-table-column>
+                <el-table-column
+                  :show-overflow-tooltip="true"
+                  label="入参/类名"
+                  prop="args">
+                </el-table-column>
+                <el-table-column
+                  label="耗时/ms"
+                  prop="duration"
+                  sortable>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-collapse-transition>
+        </template>
       </el-table-column>
+
       <el-table-column
         label="方法名"
-        fixed="left"
+        prop="method"
         width="1000">
-
-        <template slot-scope="scope">
-          {{ scope.row.method }}
-          <el-table
-            :data="scope.row.invokeDetails"
-            style="width: 100%; margin-top: 10px"
-            border>
-            <el-table-column
-              fixed="left"
-              type="index">
-            </el-table-column>
-
-            <el-table-column
-              fixed="left"
-              label="入参/类名"
-              :show-overflow-tooltip="true"
-              width="auto">
-              <template slot-scope="scope">
-                {{ scope.row.args }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              fixed="left"
-              label="耗时"
-              width="auto">
-              <template slot-scope="scope">
-                {{ scope.row.duration }}
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
-
       </el-table-column>
 
       <el-table-column
-        fixed="left"
         label="调用次数"
+        prop="invokeCount"
         width="auto">
-        <template slot-scope="scope">
-          {{ scope.row.invokeCount }}
-        </template>
       </el-table-column>
 
       <el-table-column
-        fixed="left"
-        label="总耗时">
-        <template slot-scope="scope">
-          {{ scope.row.totalCost }}
-        </template>
+        label="总耗时/ms"
+        prop="totalCost"
+        sortable>
       </el-table-column>
 
       <el-table-column
-        fixed="left"
-        label="平均耗时">
-        <template slot-scope="scope">
-          {{ scope.row.averageCost }}
-        </template>
+        label="平均耗时/ms"
+        prop="averageCost">
       </el-table-column>
     </el-table>
 
@@ -88,7 +79,12 @@ export default {
   mounted() {
     this.loadData()
       .then(methodInvokeDetailList => {
-        this.tableData = methodInvokeDetailList;
+        this.tableData = methodInvokeDetailList.filter((data) => {
+          {
+            this.$set(data, 'isShow', false)
+            return data;
+          }
+        });
         this.loading = false;
       })
   },
@@ -96,8 +92,9 @@ export default {
     return {
       loading: true,
       tableData: [],
-      filterText: 100,
-      search: ''
+      search: 100,
+      defaultSort: {prop: 'totalCost', order: 'descending'},
+      childTableSort: {prop: 'duration', order: 'descending'},
     }
   },
 

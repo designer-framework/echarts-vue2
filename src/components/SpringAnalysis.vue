@@ -6,23 +6,23 @@
       <el-container>
 
         <!-- Body -->
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick" >
-          <el-tab-pane label="组件耗时分析" name="components-analysis" :lazy="true">
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane :lazy="true" label="组件耗时分析" name="components-analysis">
             <ComponentsAnalysis style="height: 100vh"/>
           </el-tab-pane>
-          <el-tab-pane label="Bean耗时分析" name="bean-creation-analysis" :lazy="true">
+          <el-tab-pane :lazy="true" label="Bean耗时分析" name="bean-creation-analysis">
             <BeanCreationAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="方法调用耗时分析" name="method-invoke-analysis" :lazy="true">
+          <el-tab-pane :lazy="true" label="方法调用耗时分析" name="method-invoke-analysis">
             <MethodInvokeAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="未被加载的Jar包" name="class-loader-unload-jar-analysis" :lazy="true">
+          <el-tab-pane :lazy="true" label="未被加载的Jar包" name="class-loader-unload-jar-analysis">
             <ClassLoaderUnloadJarAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="性能火焰图" name="flame-graph-analysis" :lazy="true">
+          <el-tab-pane :lazy="true" label="性能火焰图" name="flame-graph-analysis">
             <FlameGraphAnalysis/>
           </el-tab-pane>
-          <el-tab-pane label="ElementUI测试页面" name="test-analysis" :lazy="true">
+          <el-tab-pane :lazy="true" label="ElementUI测试页面" name="test-analysis">
             <TestAnalysis/>
           </el-tab-pane>
         </el-tabs>
@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'class-loader-unload-jar-analysis'
+      activeName: 'method-invoke-analysis'
     };
   },
   methods: {

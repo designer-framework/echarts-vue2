@@ -8,31 +8,31 @@
 
     <el-table
       v-loading="loading"
-      element-loading-text="拼命加载中"
-      element-loading-spinner="el-icon-loading"
       :data="getTableData()"
-      :row-key="(data) => data.id"
-      :row-class-name="tableRowClassName"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       :indent="16"
+      :row-class-name="tableRowClassName"
+      :row-key="(data) => data.id"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
+      element-loading-spinner="el-icon-loading"
+      element-loading-text="拼命加载中"
       size="mini"
       style="width: 100%">
 
       <el-table-column
-        fixed="left"
         label="Bean name"
         min-width="100%"
       >
         <template slot-scope="scope">
           <el-popover
             placement="top-start"
-            title="Bean info"
-            width="100%"
-            trigger="hover">
-            <div v-if="scope.row">
-              <div v-for="(value, key) in scope.row.tags" class="text item">
-                <el-tag size="small" class="bean-tag">{{ key }}: <span>{{ value }}</span></el-tag>
+            title="Spring Bean info"
+            trigger="hover"
+            width="100%">
+            <div v-if="scope.row" STYLE="margin: 10px">
+              <div v-for="(value, key) in scope.row.tags" class="text item bean-name">
+                <el-tag class="bean-tag" size="small"> {{ key }}: <span>{{ value }}</span>
+                </el-tag>
               </div>
             </div>
             <span slot="reference">
@@ -44,14 +44,14 @@
       </el-table-column>
 
       <el-table-column
-        prop="duration"
         label="Duration/(ms)"
+        prop="duration"
         width="180px">
       </el-table-column>
 
       <el-table-column
-        prop="actualDuration"
         label="ActualDuration/(ms)"
+        prop="actualDuration"
         width="180px">
       </el-table-column>
 
@@ -61,19 +61,21 @@
         <template slot-scope="scope">
           <div v-if="scope.row.beanLifeCycles">
             <p v-if="scope.row.beanLifeCycles.createAopProxyClass">
-              <el-tag size="small" class="bean-tag">@. 创建AOP代理类耗时:
-                {{ scope.row.beanLifeCycles.createAopProxyClass.duration }}
-              </el-tag>
+              <span class="bean-name">
+                &nbsp; CreateAopProxyClass: {{ scope.row.beanLifeCycles.createAopProxyClass.duration }}
+              </span>
             </p>
             <p v-if="scope.row.beanLifeCycles.afterPropertiesSet">
-              <el-tag size="small" class="bean-tag">@. AfterPropertiesSet耗时:
-                {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}
-              </el-tag>
+              <span class="bean-name">
+                &nbsp; AfterPropertiesSet: {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}
+              </span>
             </p>
             <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
-              <el-tag size="small" class="bean-tag">@. AfterSingletonsInstantiated耗时:
-                {{ scope.row.beanLifeCycles.afterSingletonsInstantiated.duration }}
-              </el-tag>
+              <span class="bean-name">
+                &nbsp; AfterSingletonsInstantiated: {{
+                  scope.row.beanLifeCycles.afterSingletonsInstantiated.duration
+                }}
+              </span>
             </p>
           </div>
 
@@ -115,8 +117,7 @@ export default {
           }
         }
       }],
-      filterText: 100,
-      search: ''
+      search: 100
     }
   },
 
@@ -153,6 +154,10 @@ export default {
       }
 
       return this.tableData.filter(data => (data.name.toLowerCase().includes(this.search.toLowerCase())) && data.parentId === 0);
+    },
+
+    doSearch(e) {
+      alert(1)
     },
 
     /**
