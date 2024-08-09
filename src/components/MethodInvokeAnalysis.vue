@@ -2,6 +2,9 @@
   <div class="method-invoke-analysis">
 
     <el-table
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
       :data="tableData"
       style="width: 100%"
       :row-key="(data) => data.method"
@@ -84,12 +87,14 @@ export default {
   name: "MethodInvokeAnalysis",
   mounted() {
     this.loadData()
-      .then(data => {
-        this.tableData = data.methodInvokeDetailList;
+      .then(methodInvokeDetailList => {
+        this.tableData = methodInvokeDetailList;
+        this.loading = false;
       })
   },
   data() {
     return {
+      loading: true,
       tableData: [],
       filterText: 100,
       search: ''
@@ -99,7 +104,7 @@ export default {
   methods: {
 
     async loadData() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json", {
+      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=methodInvokeDetailList", {
         method: "GET",
       });
       try {

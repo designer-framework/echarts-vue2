@@ -2,11 +2,13 @@
   <div class="class-loader-unload-jar-analysis">
 
     <el-table
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
       :data="tableData"
       style="width: 100%;margin-bottom: 20px;"
       row-key="id"
       border
-      v-once
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column
         prop="name"
@@ -22,17 +24,17 @@
 <script>
 export default {
   name: "ClassLoaderUnloadJarAnalysis",
-  beforeMount() {
-   this.loadData()
-      .then(data => {
+  mounted() {
+    this.loadData()
+      .then(unusedJarMap => {
         let unusedJarArray = [];
 
-        for (const [key, value] of Object.entries(data.unusedJarMap)) {
+        for (const [classLoader, classes] of Object.entries(unusedJarMap)) {
 
           unusedJarArray.push({
-            id: key,
-            name: key,
-            children: value.map((clazz) => {
+            id: classLoader,
+            name: classLoader,
+            children: classes.map((clazz) => {
               return {
                 id: clazz,
                 name: clazz
@@ -43,10 +45,12 @@ export default {
         }
 
         this.tableData = unusedJarArray;
+        this.loading = false;
       })
   },
   data() {
     return {
+      loading: true,
       tableData: []
     }
   },
@@ -54,7 +58,7 @@ export default {
   methods: {
 
     async loadData() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json", {
+      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=unusedJarMap", {
         method: "GET",
       });
       try {

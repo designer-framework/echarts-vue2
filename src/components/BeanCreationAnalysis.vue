@@ -11,7 +11,7 @@
       element-loading-text="拼命加载中"
       element-loading-spinner="el-icon-loading"
       :data="getTableData()"
-      :row-key="(data)=>data.id"
+      :row-key="(data) => data.id"
       :row-class-name="tableRowClassName"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       :indent="16"
@@ -30,7 +30,7 @@
             title="Bean info"
             width="100%"
             trigger="hover">
-            <div  v-if="scope.row">
+            <div v-if="scope.row">
               <div v-for="(value, key) in scope.row.tags" class="text item">
                 <el-tag size="small" class="bean-tag">{{ key }}: <span>{{ value }}</span></el-tag>
               </div>
@@ -61,13 +61,19 @@
         <template slot-scope="scope">
           <div v-if="scope.row.beanLifeCycles">
             <p v-if="scope.row.beanLifeCycles.createAopProxyClass">
-              <el-tag size="small" class="bean-tag">@. 创建AOP代理类耗时: {{ scope.row.beanLifeCycles.createAopProxyClass.duration }}</el-tag>
+              <el-tag size="small" class="bean-tag">@. 创建AOP代理类耗时:
+                {{ scope.row.beanLifeCycles.createAopProxyClass.duration }}
+              </el-tag>
             </p>
             <p v-if="scope.row.beanLifeCycles.afterPropertiesSet">
-              <el-tag size="small" class="bean-tag">@. AfterPropertiesSet耗时: {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}</el-tag>
+              <el-tag size="small" class="bean-tag">@. AfterPropertiesSet耗时:
+                {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}
+              </el-tag>
             </p>
             <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
-              <el-tag size="small" class="bean-tag">@. AfterSingletonsInstantiated耗时: {{scope.row.beanLifeCycles.afterSingletonsInstantiated.duration}}</el-tag>
+              <el-tag size="small" class="bean-tag">@. AfterSingletonsInstantiated耗时:
+                {{ scope.row.beanLifeCycles.afterSingletonsInstantiated.duration }}
+              </el-tag>
             </p>
           </div>
 
@@ -84,8 +90,7 @@ export default {
   name: "BeanCreationAnalysis",
   mounted() {
     this.loadData()
-      .then(data => {
-        let createdBeans = data.beanInitResultList;
+      .then(createdBeans => {
         this.tableData = createdBeans.sort(function (a, b) {
           return b.duration - a.duration
         });
@@ -122,7 +127,7 @@ export default {
      * @returns {Promise<any>}
      */
     async loadData() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json", {
+      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=beanInitResultList", {
         method: "GET",
       });
       try {
@@ -157,7 +162,7 @@ export default {
      * @returns {string}
      */
     tableRowClassName({row, rowIndex}) {
-      if(row.parentId === 0){
+      if (row.parentId === 0) {
         return '';
       }
       if (row.actualDuration > 600) {
@@ -175,7 +180,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .bean-creation-analysis {
 }
 

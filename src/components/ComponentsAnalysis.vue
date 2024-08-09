@@ -17,8 +17,8 @@ export default {
 
       echartsBI.showLoading();
 
-      this.loadOption().then((data) => {
-        let components = data.componentsMetric.children;
+      this.loadOption().then((componentsMetric) => {
+        let components = componentsMetric.children;
 
         let ser = components.map((childComponent) => {
           return this.getSeriesItem(childComponent);
@@ -52,15 +52,16 @@ export default {
 
         //加载配置项和图表数据
         echartsBI.setOption(this.option);
-        echartsBI.hideLoading();
 
         window.onload = function () {
           echartsBI.resize();
         }
+
+        echartsBI.hideLoading();
       });
     },
     async loadOption() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json", {
+      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=componentsMetric", {
         method: "GET",
       });
       try {
