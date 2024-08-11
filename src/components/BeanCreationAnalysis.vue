@@ -3,14 +3,16 @@
 
     <div>
       <el-input v-model="search.duration"
+                placeholder="输入创建Bean耗时"
                 size="mini"
                 style="width: 20%">
-        <template slot="prepend">Duration/(ms):</template>
+        <template slot="prepend">Duration/(ms)</template>
       </el-input>
       <el-input v-model="search.beanName"
+                placeholder="输入Bean名称"
                 size="mini"
                 style="width: 20%">
-        <template slot="prepend">Bean Name:</template>
+        <template slot="prepend">Bean Name</template>
       </el-input>
     </div>
 
