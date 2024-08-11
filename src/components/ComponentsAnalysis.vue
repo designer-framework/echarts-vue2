@@ -27,10 +27,14 @@ export default {
         //各组件
         let newOption = {
           legend: {
-            type: 'scroll',//滚动
-            orient: 'vertical',//Title摆放位置
-            left: 5,
-            bottom: 20,
+            type: 'scroll', //滚动
+            orient: 'vertical', //Title摆放位置
+            right: 5,
+            bottom: 5,
+            itemStyle: {
+              borderType: [5, 10],
+              borderDashOffset: 5,
+            },
             //legend
             data: components.map((child) => {
               return child.name;
@@ -40,8 +44,7 @@ export default {
           series: [
             {
               type: "pie",
-              radius: "65%",
-              center: ["50%", "50%"],
+              radius: ['45%', '60%'],
               selectedMode: "single",
               data: ser,
             },
@@ -79,9 +82,15 @@ export default {
         };
       }
       let items = childComponent.children.map((componentItem) => {
-        return (
-          "{Line|" + componentItem.name + "              }{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "%}"
-        );
+        if (componentItem.name && componentItem.name.length > 71) {
+          return (
+            "{Line|..." + componentItem.name.slice(componentItem.name.length - 68, componentItem.name.length) + "             }{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "%}"
+          );
+        } else {
+          return (
+            "{Line|" + componentItem.name + "             }{value|" + componentItem.value + "/ms}{rate|" + componentItem.percent + "%}"
+          );
+        }
       });
 
       return {
@@ -93,40 +102,44 @@ export default {
           //rotate: 'radial',
           formatter: [
             "{title|{b}}{abg|}",
-            "  {nameHead|ItemName}{valueHead|Duration}{rateHead|Percent}",
+            "{nameHead|ItemName}{valueHead|Duration}{rateHead|Percent}",
             "{hr|}",
             ...items,
           ].join("\n"),
-          backgroundColor: "#eee",
-          borderColor: "#777",
+          backgroundColor: '#F6F8FC',
+          borderColor: '#8C8D8E',
           borderWidth: 1,
           borderRadius: 4,
           rich: {
             title: {
-              color: "#eee",
-              align: "center",
+              color: '#eee',
+              lineHeight: 17,
+              align: 'center'
             },
             abg: {
-              backgroundColor: "#333",
+              backgroundColor: '#333',
               width: "100%",
               align: "right",
-              height: 25,
-              borderRadius: [4, 4, 0, 0],
+              height: 17,
+              borderRadius: [2, 2, 0, 0],
             },
             Line: {
-              height: 30,
+              color: '#4C5058',
+              width: '100%',
               align: "left",
             },
             nameHead: {
               color: "#333",
-              height: 24,
-              align: "left",
+              height: 17,
+              align: 'left'
             },
             hr: {
-              borderColor: "#777",
-              width: "100%",
-              borderWidth: 0.5,
+              backgroundColor: "#333",
+              borderColor: '#8C8D8E',
+              width: '100%',
+              borderWidth: 1,
               height: 0,
+              align: 'left'
             },
             value: {
               width: 20,
@@ -140,9 +153,12 @@ export default {
               align: "right",
             },
             rate: {
+              color: '#fff',
+              backgroundColor: '#4C5058',
+              padding: [3, 4],
               width: 40,
               align: "right",
-              padding: [0, 10, 0, 0],
+              borderRadius: 4
             },
             rateHead: {
               color: "#333",
@@ -172,8 +188,6 @@ export default {
           }
         },
         legend: {
-          bottom: 10,
-          left: "center",
           data: [],
         },
         series: [
