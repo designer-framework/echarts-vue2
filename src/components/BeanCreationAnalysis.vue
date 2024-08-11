@@ -1,14 +1,23 @@
 <template>
   <div class="bean-creation-analysis">
 
-    <el-input
-      v-model="search"
-      placeholder="创建Bean耗时/ms 或 Bean名称"
-      size="mini"/>
+    <div>
+      <el-input v-model="search.duration"
+                size="mini"
+                style="width: 20%">
+        <template slot="prepend">Duration/(ms):</template>
+      </el-input>
+      <el-input v-model="search.beanName"
+                size="mini"
+                style="width: 20%">
+        <template slot="prepend">Bean Name:</template>
+      </el-input>
+    </div>
 
     <el-table
       v-loading="loading"
       :data="getTableData()"
+      :default-sort="defaultSort"
       :indent="16"
       :row-class-name="tableRowClassName"
       :row-key="(data) => data.id"
@@ -92,20 +101,24 @@ export default {
   mounted() {
     this.loadData()
       .then(createdBeans => {
-        this.tableData = createdBeans.sort(function (a, b) {
-          return b.duration - a.duration
-        });
+        this.tableData = createdBeans;
         this.loading = false;
       })
   },
   data() {
     return {
       loading: true,
+      defaultSort: {prop: 'duration', order: 'descending'},
+      search: {
+        beanName: '',
+        duration: 100
+      },
       tableData: [{
         id: -1,
         name: '',
         children: [],
         parentId: -1,
+        duration: -1,
         actualDuration: -1,
         isShow: false,
         tags: {},
@@ -115,8 +128,7 @@ export default {
             duration: -1
           }
         }
-      }],
-      search: 100
+      }]
     }
   },
 
@@ -142,21 +154,18 @@ export default {
      * @returns {{children: *[], name: string, actualDuration: number, id: number, parentId: number, isShow: boolean, tags: {}, beanLifeCycles: {prop: {duration: number, stepName: string}}}[]}
      */
     getTableData() {
-      if (!this.search) {
-        return this.tableData.filter(data => {
-          return data.parentId === 0;
-        });
-      }
+      return this.tableData.filter(data => {
 
-      if (!isNaN(Number.parseFloat(this.search)) && isFinite(this.search)) {
-        return this.tableData.filter(data => (data.actualDuration > this.search) && data.parentId === 0)
-      }
+        if (data.parentId !== 0) {
+          return false;
+        }
 
-      return this.tableData.filter(data => (data.name.toLowerCase().includes(this.search.toLowerCase())) && data.parentId === 0);
-    },
+        if (data.duration < this.search.duration) {
+          return false;
+        }
 
-    doSearch(e) {
-      alert(1)
+        return !this.search.beanName || (data.name.toLowerCase().includes(this.search.beanName.toLowerCase()));
+      });
     },
 
     /**
