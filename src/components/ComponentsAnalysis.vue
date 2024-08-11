@@ -1,5 +1,5 @@
 <template>
-  <div class="components-analysis">
+  <div id="components-analysis">
   </div>
 </template>
 
@@ -206,7 +206,7 @@ export default {
 </script>
 
 <style scoped>
-.components-analysis {
+#components-analysis {
   height: 100%;
   width: 100%
 }
