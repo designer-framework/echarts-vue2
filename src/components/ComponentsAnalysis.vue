@@ -74,7 +74,7 @@ export default {
       }
     },
     getSeriesItem(childComponent) {
-      if (childComponent.children.length == 0) {
+      if (childComponent.children.length === 0) {
         return {
           name: childComponent.name,
           value: childComponent.value,
