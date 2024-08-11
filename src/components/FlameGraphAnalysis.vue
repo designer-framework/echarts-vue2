@@ -4,9 +4,7 @@
       :src="flameGraphUrl"
       allowfullscreen
       frameborder="0"
-      height="100%"
-      width="100%"
-    >
+      height="100%">
     </iframe>
   </div>
 </template>
@@ -24,5 +22,19 @@ export default {
 
 <style scoped>
 .flame-graph-analysis {
+  width: 100%;
+  height: 100vh; /* 视口高度，100%的屏幕高度 */
+}
+
+html, body {
+  margin: 0 0;
+  width: 100%;
+  height: 100%;
+}
+
+iframe {
+  margin: 0 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
