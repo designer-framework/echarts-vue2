@@ -18,31 +18,29 @@
         type="expand"
         width="100%">
         <template slot-scope="scope">
-          <el-collapse-transition>
-            <div>
-              <el-table
-                :data="scope.row.invokeDetails"
-                :default-sort="childTableSort"
-                border
-                size="medium"
-                style="width: 100%;">
-                <el-table-column width="100%">
-                </el-table-column>
-                <el-table-column type="index">
-                </el-table-column>
-                <el-table-column
-                  :show-overflow-tooltip="true"
-                  label="入参/类名"
-                  prop="args">
-                </el-table-column>
-                <el-table-column
-                  label="耗时/ms"
-                  prop="duration"
-                  sortable>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-collapse-transition>
+          <div>
+            <el-table
+              :data="scope.row.invokeDetails"
+              :default-sort="childTableSort"
+              border
+              size="medium"
+              style="width: 100%;">
+              <el-table-column width="100%">
+              </el-table-column>
+              <el-table-column type="index">
+              </el-table-column>
+              <el-table-column
+                :show-overflow-tooltip="true"
+                label="入参/类名"
+                prop="args">
+              </el-table-column>
+              <el-table-column
+                label="耗时/ms"
+                prop="duration"
+                sortable>
+              </el-table-column>
+            </el-table>
+          </div>
         </template>
       </el-table-column>
 
@@ -54,8 +52,7 @@
 
       <el-table-column
         label="调用次数"
-        prop="invokeCount"
-        width="auto">
+        prop="invokeCount">
       </el-table-column>
 
       <el-table-column
@@ -74,19 +71,20 @@
 </template>
 
 <script>
+import {$api} from "../common/utils/request";
+
 export default {
   name: "MethodInvokeAnalysis",
   mounted() {
-    this.loadData()
-      .then(methodInvokeDetailList => {
-        this.tableData = methodInvokeDetailList.filter((data) => {
-          {
-            this.$set(data, 'isShow', false)
-            return data;
-          }
-        });
-        this.loading = false;
-      })
+    $api('methodInvokeDetailList', methodInvokeDetailList => {
+      this.tableData = methodInvokeDetailList.filter((data) => {
+        {
+          this.$set(data, 'isShow', false)
+          return data;
+        }
+      });
+      this.loading = false;
+    })
   },
   data() {
     return {
@@ -99,17 +97,6 @@ export default {
   },
 
   methods: {
-
-    async loadData() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=methodInvokeDetailList", {
-        method: "GET",
-      });
-      try {
-        return await response.json();
-      } catch (error) {
-        console.error("An error occurred:", error.message);
-      }
-    },
 
   }
 };

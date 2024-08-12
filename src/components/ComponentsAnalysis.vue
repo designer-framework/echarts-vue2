@@ -4,6 +4,8 @@
 </template>
 
 <script>
+import {$api} from '../common/utils/request.js';
+
 export default {
   name: "ComponentsAnalysis",
   mounted() {
@@ -17,36 +19,56 @@ export default {
 
       echartsBI.showLoading();
 
-      this.loadOption().then((componentsMetric) => {
+      $api("componentsMetric", (componentsMetric) => {
+
         let components = componentsMetric.children;
 
-        let ser = components.map((childComponent) => {
+        let seriesItems = components.map((childComponent) => {
           return this.getSeriesItem(childComponent);
         });
+
 
         //各组件
         let newOption = {
           legend: {
             type: 'scroll', //滚动
             orient: 'vertical', //Title摆放位置
-            right: 5,
-            bottom: 5,
+            left: 1,
+            bottom: 60,
+            emphasis: {
+              selectorLabel: {
+                lineHeight: 200
+              }
+            },
             itemStyle: {
               borderType: [5, 10],
               borderDashOffset: 5,
+              opacity: 0.4
             },
             //legend
             data: components.map((child) => {
               return child.name;
             }),
           },
+
           //data
           series: [
             {
               type: "pie",
               radius: ['45%', '60%'],
+              center: ["50%", "50%"],
               selectedMode: "single",
-              data: ser,
+              avoidLabelOverlap: true,
+              data: seriesItems,
+              startAngle: 1,
+              emphasis: {
+                itemStyle: {
+                  type: 'dashed',
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: "rgba(0, 0, 0, 0.5)",
+                },
+              }
             },
           ],
         };
@@ -61,18 +83,10 @@ export default {
         }
 
         echartsBI.hideLoading();
+
       });
     },
-    async loadOption() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=componentsMetric", {
-        method: "GET",
-      });
-      try {
-        return await response.json();
-      } catch (error) {
-        console.error("An error occurred:", error.message);
-      }
-    },
+
     getSeriesItem(childComponent) {
       if (childComponent.children.length === 0) {
         return {
@@ -99,7 +113,7 @@ export default {
         desc: childComponent.desc,
         label: {
           show: true,
-          //rotate: 'radial',
+          rotate: 'tangential',
           formatter: [
             "{title|{b}}{abg|}",
             "{nameHead|ItemName}{valueHead|Duration}{rateHead|Percent}",
@@ -170,6 +184,7 @@ export default {
         },
       };
     },
+
   },
   //data
   data() {
@@ -187,32 +202,8 @@ export default {
             return item.marker + ' ' + item.name + ': ' + item.value + ' (' + item.percent + '%)<br>' + (item.data.desc ? item.data.desc : '');
           }
         },
-        legend: {
-          data: [],
-        },
-        series: [
-          {
-            type: "pie",
-            radius: "65%",
-            center: ["50%", "50%"],
-            selectedMode: "single",
-            avoidLabelOverlap: true,
-            data: [],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
-            labelLine: {
-              smooth: true
-            },
-            select: {
-              disabled: false
-            }
-          },
-        ],
+        legend: {},
+        series: [],
       },
     };
   },

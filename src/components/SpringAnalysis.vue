@@ -7,22 +7,28 @@
 
         <!-- Body -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane :lazy="true" label="组件耗时分析" name="components-analysis">
+          <el-tab-pane :lazy="true" name="components-analysis">
+            <span slot="label"><i class="el-icon-pie-chart"></i> 组件耗时分析</span>
             <ComponentsAnalysis style="height: 100vh"/>
           </el-tab-pane>
-          <el-tab-pane :lazy="true" label="Bean耗时分析" name="bean-creation-analysis">
+          <el-tab-pane :lazy="true" name="bean-creation-analysis">
+            <span slot="label"><i class="el-icon-soccer"></i> Bean耗时分析</span>
             <BeanCreationAnalysis/>
           </el-tab-pane>
-          <el-tab-pane :lazy="true" label="方法调用耗时分析" name="method-invoke-analysis">
+          <el-tab-pane :lazy="true" name="method-invoke-analysis">
+            <span slot="label"><i class="el-icon-files"></i> 方法调用耗时分析</span>
             <MethodInvokeAnalysis/>
           </el-tab-pane>
-          <el-tab-pane :lazy="true" label="未被加载的Jar包" name="class-loader-unload-jar-analysis">
+          <el-tab-pane :lazy="true" name="class-loader-unload-jar-analysis">
+            <span slot="label"><i class="el-icon-no-smoking"></i> 未被加载的Jar包</span>
             <ClassLoaderUnloadJarAnalysis/>
           </el-tab-pane>
-          <el-tab-pane :lazy="true" label="性能火焰图" name="flame-graph-analysis">
+          <el-tab-pane :lazy="true" name="flame-graph-analysis">
+            <span slot="label"><i class="el-icon-s-marketing"></i> 性能火焰图</span>
             <FlameGraphAnalysis/>
           </el-tab-pane>
-          <el-tab-pane :lazy="true" label="ElementUI测试页面" name="test-analysis">
+          <el-tab-pane :lazy="true" name="test-analysis">
+            <span slot="label"><i class="el-icon-more-outline"></i> ElementUI测试页面</span>
             <TestAnalysis/>
           </el-tab-pane>
         </el-tabs>

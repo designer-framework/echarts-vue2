@@ -22,11 +22,12 @@
 </template>
 
 <script>
+import {$api} from "../common/utils/request";
+
 export default {
   name: "ClassLoaderUnloadJarAnalysis",
   mounted() {
-    this.loadData()
-      .then(unusedJarMap => {
+    $api('unusedJarMap', unusedJarMap => {
         let unusedJarArray = [];
 
         for (const [classLoader, classes] of Object.entries(unusedJarMap)) {
@@ -56,17 +57,6 @@ export default {
   },
 
   methods: {
-
-    async loadData() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=unusedJarMap", {
-        method: "GET",
-      });
-      try {
-        return await response.json();
-      } catch (error) {
-        console.error("An error occurred:", error.message);
-      }
-    },
 
   }
 

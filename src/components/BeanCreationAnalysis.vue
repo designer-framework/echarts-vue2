@@ -98,11 +98,12 @@
 </template>
 
 <script>
+import {$api} from "../common/utils/request";
+
 export default {
   name: "BeanCreationAnalysis",
   mounted() {
-    this.loadData()
-      .then(createdBeans => {
+    $api('beanInitResultList', createdBeans => {
         this.tableData = createdBeans;
         this.loading = false;
       })
@@ -135,21 +136,6 @@ export default {
   },
 
   methods: {
-
-    /**
-     *
-     * @returns {Promise<any>}
-     */
-    async loadData() {
-      const response = await fetch("http://127.0.0.1:9999/analysis/json?type=beanInitResultList", {
-        method: "GET",
-      });
-      try {
-        return await response.json();
-      } catch (error) {
-        console.error("An error occurred:", error.message);
-      }
-    },
 
     /**
      *
