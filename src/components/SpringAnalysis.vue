@@ -7,6 +7,10 @@
 
         <!-- Body -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane :lazy="true" name="spring-application-info">
+            <span slot="label"><i class="el-icon-pie-chart"></i> Spring基本信息</span>
+            <SpringApplicationInfo/>
+          </el-tab-pane>
           <el-tab-pane :lazy="true" name="components-analysis">
             <span slot="label"><i class="el-icon-pie-chart"></i> 组件耗时分析</span>
             <ComponentsAnalysis style="height: 100vh"/>
@@ -40,6 +44,7 @@
 </template>
 
 <script>
+import SpringApplicationInfo from "./SpringApplicationInfo.vue";
 import ComponentsAnalysis from "./ComponentsAnalysis.vue";
 import BeanCreationAnalysis from "./BeanCreationAnalysis.vue";
 import MethodInvokeAnalysis from "./MethodInvokeAnalysis.vue";
@@ -50,6 +55,7 @@ import TestAnalysis from "./TestAnalysis.vue";
 export default {
   name: 'SpringAnalysis',
   components: {
+    SpringApplicationInfo,
     ComponentsAnalysis,
     BeanCreationAnalysis,
     MethodInvokeAnalysis,
