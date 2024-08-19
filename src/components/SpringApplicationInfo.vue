@@ -1,28 +1,20 @@
 <template>
   <div class="spring-boot-info">
-
-    <el-table
-      v-loading="loading"
-      :data="tableData"
-      :show-header=false
-      border
-      element-loading-spinner="el-icon-loading"
-      element-loading-text="拼命加载中"
-      row-key="id"
-      size="mini"
-      style="width: 100%;">
-      <el-table-column
-        align="center"
-        min-width="10%"
-        prop="label">
-      </el-table-column>
-      <el-table-column
-        align="center"
-        min-width="10%"
-        prop="value">
-      </el-table-column>
-    </el-table>
-
+    <div>
+      <el-row >
+        <el-col >
+          <el-card shadow="hover" style="width: 100%;" v-for="item in tableData">
+            <div style="width: 100%; display: inline-block; ">
+              <el-statistic :value="item"  :title="getTitle(item)">
+                <template slot="suffix">
+                  {{ item.value}}
+                </template>
+              </el-statistic>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -41,12 +33,15 @@ export default {
   },
   data() {
     return {
-      loading: true,
       tableData: []
     }
   },
 
-  methods: {}
+  methods: {
+    getTitle(item){
+      return "🎉" + item.label + "🎉";
+    }
+  }
 
 }
 ;
@@ -54,5 +49,11 @@ export default {
 
 <style scoped>
 .spring-boot-info {
+}
+
+.like {
+  cursor: pointer;
+  font-size: 25px;
+  display: inline-block;
 }
 </style>

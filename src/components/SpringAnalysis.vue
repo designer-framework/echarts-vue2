@@ -6,7 +6,7 @@
       <el-container>
 
         <!-- Body -->
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="true" style="height: 160px;">
           <el-tab-pane :lazy="true" name="spring-application-info">
             <span slot="label"><i class="el-icon-pie-chart"></i> Spring基本信息</span>
             <SpringApplicationInfo/>

@@ -1,18 +1,20 @@
 <template>
   <div class="bean-creation-analysis">
 
-    <div>
+    <div style="margin-bottom: 20px;">
       <el-input v-model="search.duration"
                 placeholder="输入创建Bean耗时"
-                size="mini"
-                style="width: 20%">
+                size="medium"
+                style="width: 20%; margin: 12px;">
         <template slot="prepend">Duration/(ms)</template>
+        <i slot="prefix" class="el-input__icon el-icon-search"></i>
       </el-input>
       <el-input v-model="search.beanName"
                 placeholder="输入Bean名称"
-                size="mini"
+                size="medium"
                 style="width: 20%">
         <template slot="prepend">Bean Name</template>
+        <i slot="prefix" class="el-input__icon el-icon-search"></i>
       </el-input>
     </div>
 
@@ -32,26 +34,33 @@
 
       <el-table-column
         label="Bean name"
-        min-width="100%"
-      >
+        min-width="100%">
+
         <template slot-scope="scope">
           <el-popover
-            placement="top-start"
-            title="Spring Bean info"
+            placement="right-start"
             trigger="hover"
             width="100%">
-            <div v-if="scope.row" STYLE="margin: 10px">
-              <div v-for="(value, key) in scope.row.tags" class="text item bean-name">
-                <el-tag class="bean-tag" size="small"> {{ key }}: <span>{{ value }}</span>
-                </el-tag>
-              </div>
+
+            <div v-if="scope.row">
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <span>Spring Bean info</span>
+                </div>
+                <div v-for="(value, key) in scope.row.tags" class="text item">
+                  {{ key }}: {{ value }}
+                </div>
+              </el-card>
             </div>
+
             <span slot="reference">
               <span class="bean-name"></span>
               <el-tag size="small">{{ scope.row.name }}</el-tag>
             </span>
+
           </el-popover>
         </template>
+
       </el-table-column>
 
       <el-table-column
@@ -70,24 +79,25 @@
         label="ActualDurationDetail/(ms)"
         width="auto">
         <template slot-scope="scope">
+
           <div v-if="scope.row.beanLifeCycles">
-            <p v-if="scope.row.beanLifeCycles.createAopProxyClass">
-              <span class="bean-name">
-                &nbsp; CreateAopProxyClass: {{ scope.row.beanLifeCycles.createAopProxyClass.duration }}
-              </span>
-            </p>
-            <p v-if="scope.row.beanLifeCycles.afterPropertiesSet">
-              <span class="bean-name">
-                &nbsp; AfterPropertiesSet: {{ scope.row.beanLifeCycles.afterPropertiesSet.duration }}
-              </span>
-            </p>
-            <p v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated">
-              <span class="bean-name">
-                &nbsp; AfterSingletonsInstantiated: {{
-                  scope.row.beanLifeCycles.afterSingletonsInstantiated.duration
-                }}
-              </span>
-            </p>
+            <el-steps direction="vertical">
+              <el-step title="AfterPropertiesSet"
+                       v-if="scope.row.beanLifeCycles.afterPropertiesSet"
+                       :description="getDescription(scope.row.beanLifeCycles.afterPropertiesSet.duration)"
+                       status="success">
+              </el-step>
+              <el-step title="CreateAopProxyClass"
+                       v-if="scope.row.beanLifeCycles.createAopProxyClass"
+                       :description="getDescription(scope.row.beanLifeCycles.createAopProxyClass.duration)"
+                       status="success">
+              </el-step>
+              <el-step title="AfterSingletonsInstantiated"
+                       v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated"
+                       :description="getDescription(scope.row.beanLifeCycles.afterSingletonsInstantiated.duration)"
+                       status="success">
+              </el-step>
+            </el-steps>
           </div>
 
         </template>
@@ -104,9 +114,9 @@ export default {
   name: "BeanCreationAnalysis",
   mounted() {
     $api('beanInitResultList', createdBeans => {
-        this.tableData = createdBeans;
-        this.loading = false;
-      })
+      this.tableData = createdBeans;
+      this.loading = false;
+    })
   },
   data() {
     return {
@@ -175,6 +185,10 @@ export default {
       }
     },
 
+    getDescription(description) {
+      return description + '/ms';
+    }
+
   },
 
 
@@ -225,8 +239,30 @@ export default {
   margin-right: 3px;
 }
 
-.bean-tag {
-  background: #f0f9eb;
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both
+}
+
+.box-card {
+  //width: 480px;
+}
+
+.el-step__title {
+  font-size: 13px !important;
 }
 
 </style>
