@@ -35,7 +35,6 @@
       <el-table-column
         label="Bean name"
         min-width="100%">
-
         <template slot-scope="scope">
           <el-popover
             placement="right-start"
@@ -48,7 +47,7 @@
                   <span>Spring Bean info</span>
                 </div>
                 <div v-for="(value, key) in scope.row.tags" class="text item">
-                  {{ key }}: {{ value }}
+                  <strong>{{ key[0].toUpperCase() + key.slice(1) }}</strong>: {{ value }}
                 </div>
               </el-card>
             </div>
@@ -60,7 +59,6 @@
 
           </el-popover>
         </template>
-
       </el-table-column>
 
       <el-table-column
@@ -76,32 +74,21 @@
       </el-table-column>
 
       <el-table-column
-        label="ActualDurationDetail/(ms)"
+        label="SomeActualDurationDetail/(ms)"
         width="auto">
         <template slot-scope="scope">
-
-          <div v-if="scope.row.beanLifeCycles">
-            <el-steps direction="vertical">
-              <el-step title="AfterPropertiesSet"
-                       v-if="scope.row.beanLifeCycles.afterPropertiesSet"
-                       :description="getDescription(scope.row.beanLifeCycles.afterPropertiesSet.duration)"
-                       status="success">
-              </el-step>
-              <el-step title="CreateAopProxyClass"
-                       v-if="scope.row.beanLifeCycles.createAopProxyClass"
-                       :description="getDescription(scope.row.beanLifeCycles.createAopProxyClass.duration)"
-                       status="success">
-              </el-step>
-              <el-step title="AfterSingletonsInstantiated"
-                       v-if="scope.row.beanLifeCycles.afterSingletonsInstantiated"
-                       :description="getDescription(scope.row.beanLifeCycles.afterSingletonsInstantiated.duration)"
-                       status="success">
-              </el-step>
-            </el-steps>
+          <div v-if="scope.row.beanLifeCycles" class="block">
+            <el-timeline>
+              <el-timeline-item
+                v-for="[key, value] in Object.entries(scope.row.beanLifeCycles)"
+                :key="key"
+                type="primary"
+                :timestamp="'耗时: ' + value.duration + '/ms'">
+                {{ key[0].toUpperCase() + key.slice(1) }}
+              </el-timeline-item>
+            </el-timeline>
           </div>
-
         </template>
-
       </el-table-column>
     </el-table>
   </div>
@@ -142,7 +129,7 @@ export default {
           }
         }
       }]
-    }
+    };
   },
 
   methods: {
@@ -184,11 +171,6 @@ export default {
         return 'success-row';
       }
     },
-
-    getDescription(description) {
-      return description + '/ms';
-    }
-
   },
 
 
@@ -240,11 +222,11 @@ export default {
 }
 
 .text {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .item {
-  margin-bottom: 18px;
+  margin-bottom: 5px;
 }
 
 .clearfix:before,
@@ -255,14 +237,6 @@ export default {
 
 .clearfix:after {
   clear: both
-}
-
-.box-card {
-  //width: 480px;
-}
-
-.el-step__title {
-  font-size: 13px !important;
 }
 
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div class="spring-boot-info">
     <div>
-      <el-row >
-        <el-col >
-          <el-card shadow="hover" style="width: 100%;" v-for="item in tableData">
+      <el-row>
+        <el-col>
+          <el-card shadow="hover" style="width: 100%;" v-for="item in tableData" :key="item.label">
             <div style="width: 100%; display: inline-block; ">
-              <el-statistic :value="item"  :title="getTitle(item)">
+              <el-statistic :value="item" :title="getTitle(item)">
                 <template slot="suffix">
-                  {{ item.value}}
+                  {{ item.value }}
                 </template>
               </el-statistic>
             </div>
@@ -38,7 +38,7 @@ export default {
   },
 
   methods: {
-    getTitle(item){
+    getTitle(item) {
       return "🎉" + item.label + "🎉";
     }
   }
