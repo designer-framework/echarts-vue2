@@ -3,9 +3,9 @@
     <div>
       <el-row>
         <el-col>
-          <el-card shadow="hover" style="width: 100%;" v-for="item in tableData" :key="item.label">
+          <el-card v-for="item in tableData" :key="item.label" shadow="hover" style="width: 100%;">
             <div style="width: 100%; display: inline-block; ">
-              <el-statistic :value="item" :title="getTitle(item)">
+              <el-statistic :title="getTitle(item)">
                 <template slot="suffix">
                   {{ item.value }}
                 </template>

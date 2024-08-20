@@ -3,17 +3,17 @@
 
     <div style="margin-bottom: 20px;">
       <el-input v-model="search.duration"
-                placeholder="输入创建Bean耗时"
+                placeholder="输入创建耗时/(ms)"
                 size="medium"
                 style="width: 20%; margin: 12px;">
-        <template slot="prepend">Duration/(ms)</template>
+        <template slot="prepend">创建耗时/(ms)</template>
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
       </el-input>
       <el-input v-model="search.beanName"
                 placeholder="输入Bean名称"
                 size="medium"
                 style="width: 20%">
-        <template slot="prepend">Bean Name</template>
+        <template slot="prepend">Bean名称</template>
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
       </el-input>
     </div>
@@ -33,7 +33,7 @@
       style="width: 100%">
 
       <el-table-column
-        label="Bean name"
+        label="Bean名称"
         min-width="100%">
         <template slot-scope="scope">
           <el-popover
@@ -62,19 +62,19 @@
       </el-table-column>
 
       <el-table-column
-        label="Duration/(ms)"
+        label="创建耗时/(ms)"
         prop="duration"
         width="180px">
       </el-table-column>
 
       <el-table-column
-        label="ActualDuration/(ms)"
+        label="实际耗时/(ms)"
         prop="actualDuration"
         width="180px">
       </el-table-column>
 
       <el-table-column
-        label="SomeActualDurationDetail/(ms)"
+        label="实际耗时明细/(ms)"
         width="auto">
         <template slot-scope="scope">
           <div v-if="scope.row.beanLifeCycles" class="block">
@@ -82,9 +82,9 @@
               <el-timeline-item
                 v-for="[key, value] in Object.entries(scope.row.beanLifeCycles)"
                 :key="key"
-                type="primary"
-                :timestamp="'耗时: ' + value.duration + '/ms'">
-                {{ key[0].toUpperCase() + key.slice(1) }}
+                :timestamp="'耗时: ' + value.duration + '/ms'"
+                type="primary">
+                {{ key }}
               </el-timeline-item>
             </el-timeline>
           </div>
@@ -171,6 +171,7 @@ export default {
         return 'success-row';
       }
     },
+
   },
 
 
