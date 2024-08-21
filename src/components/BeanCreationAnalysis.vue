@@ -82,6 +82,7 @@
               <el-timeline-item
                 v-for="[key, value] in Object.entries(scope.row.beanLifeCycles)"
                 :key="key"
+                icon="el-icon-bottom"
                 :timestamp="'耗时: ' + value.duration + '/ms'"
                 type="primary">
                 {{ key }}
